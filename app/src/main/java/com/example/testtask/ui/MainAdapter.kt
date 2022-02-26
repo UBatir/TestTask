@@ -2,22 +2,20 @@ package com.example.testtask.ui
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.testtask.R
 import com.example.testtask.core.extentions.inflate
 import com.example.testtask.core.extentions.onClick
 import com.example.testtask.databinding.ItemPhotoBinding
 
-
+@SuppressLint("NotifyDataSetChanged")
 class MainAdapter:RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
 
     var models:MutableList<String> = mutableListOf()
-    @SuppressLint("NotifyDataSetChanged")
     set(value) {
         field=value
         notifyDataSetChanged()
@@ -29,19 +27,20 @@ class MainAdapter:RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
     }
 
     inner class MainViewHolder(private val binding: ItemPhotoBinding):RecyclerView.ViewHolder(binding.root){
-        @SuppressLint("SetJavaScriptEnabled")
         fun populateModel(model:String){
-            var url = if (model[5]!='s') model.replace("http","https")
+            val url = if (model[4]!='s') model.replace("http","https")
             else model
-            url=url.dropLast(1).drop(1)
+            Glide.with(binding.root)
+                .load(url)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(false)
+                .centerCrop()
+                .error(R.drawable.ic_image_not_supported)
+                .into(binding.ivPhoto)
             binding.root.onClick {
                 onItemClick.invoke(url)
             }
-            Glide.with(binding.root)
-                .load(url)
-                .error(R.drawable.image)
-                .centerCrop()
-                .into(binding.ivPhoto)
         }
     }
 

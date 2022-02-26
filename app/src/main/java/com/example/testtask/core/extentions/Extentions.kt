@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,11 @@ import androidx.annotation.LayoutRes
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
+import com.example.testtask.BuildConfig
+import com.readystatesoftware.chuck.ChuckInterceptor
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 
 fun View.visibility(visibility: Boolean): View {
     if (visibility) {
@@ -83,3 +89,17 @@ val String.ifContainsLatin: Boolean
         }
         return false
     }
+
+fun <T : ViewBinding> T.scope(block: T.() -> Unit) {
+    block(this)
+}
+
+fun OkHttpClient.Builder.addLoggingInterceptor(context:Context): OkHttpClient.Builder {
+    HttpLoggingInterceptor.Level.HEADERS
+    val logging = HttpLoggingInterceptor.Logger { message -> Log.d("HTTP",message) }
+    if (BuildConfig.LOGGING) {
+        addInterceptor(ChuckInterceptor(context))
+        addInterceptor(HttpLoggingInterceptor(logging))
+    }
+    return this
+}

@@ -9,7 +9,7 @@
         android:name="com.example.testtask.ui.MainFragment"
         android:label="MainFragment" >
         <action
-            android:id="@+id/action_mainFragment_to_selectedPhoto"
+            android:id="@+id/action_mainFragment_to_selectedPhotoFragment"
             app:destination="@id/selectedPhotoFragment" />
     </fragment>
     <fragment
